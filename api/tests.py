@@ -47,3 +47,9 @@ class RatingTestCase(APITestCase):
         self.client.post("/api/cars/", test_car)
         response = self.client.post("/api/rate/", test_higher_rate)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+class PopularTestCase(APITestCase):
+
+    def test_popular(self):
+        response = self.client.get("/api/popular/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

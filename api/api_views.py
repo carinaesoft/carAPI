@@ -1,4 +1,3 @@
-import filters as filters
 from django.db.models import Count, Avg
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -7,7 +6,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework import mixins
-from .serializers import CarSerializer, RateSerializer
+from .serializers import CarSerializer, RateSerializer, PopularSerializer
 from .models import Car, Rating
 
 from .vpic_check import check_car
@@ -81,6 +80,10 @@ class Cars(mixins.ListModelMixin,
     queryset = Car.objects.all()
     serializer_class = CarSerializer
 
+    def get_queryset(self):
+        self.queryset = Car.objects.all().annotate(avg_rating=Avg('rates__rate'))
+        return self.queryset
+
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
@@ -143,11 +146,10 @@ class Rating(mixins.ListModelMixin,
 
 
 class Popular(generics.ListCreateAPIView):
-    queryset = Car.objects.all().order_by('rating')
-    serializer_class = CarSerializer
+    queryset = Car.objects.all()
+    serializer_class = PopularSerializer
 
     def get_queryset(self):
-        return  self.queryset.annotate(
-                                    avg_rating=Avg('rating'),
-                                    rates_number=Count('rates_number__rating')
-        )
+        self.queryset = Car.objects.all().annotate(rates_number=Count('rates')
+                                                    ).order_by('-rates_number')
+        return self.queryset
