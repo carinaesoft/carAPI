@@ -147,7 +147,7 @@ class Popular(generics.ListCreateAPIView):
     serializer_class = CarSerializer
 
     def get_queryset(self):
-        return  Car.objects.annotate(
+        return  self.queryset.annotate(
                                     avg_rating=Avg('rating'),
                                     rates_number=Count('rates_number__rating')
         )
