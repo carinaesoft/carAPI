@@ -34,7 +34,7 @@
    on a number of rates )
 
 API is available under http://150.230.144.242/api/cars/ (deployed on Oracle Cloud VM)
-You can deploy the api localy using docker. Fetch this GIT branch and build image by yourself using 
+You can deploy the api locally using docker. Fetch this GIT branch and build image by yourself using 
 
 > docker build -t carapi .
 
@@ -42,5 +42,5 @@ or pull the built image from docker hub:
 
 > docker pull morthell/carapi:latest
 
-[Public View](https://hub.docker.com/r/morthell/carapi)
+[Public View Docker Hub](https://hub.docker.com/r/morthell/carapi)
 
