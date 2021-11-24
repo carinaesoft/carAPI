@@ -98,6 +98,7 @@ class Cars(mixins.ListModelMixin,
             print(result)
             if serializer.is_valid():
                 # if car is not in DB
+                print(data_list)
                 if not data_list:
 
                     # if car exists in vnic db
@@ -105,9 +106,10 @@ class Cars(mixins.ListModelMixin,
                         self.perform_create(serializer)
                         info = f'Car has been created {request.data} '
                         return Response({'success': info}, status=status.HTTP_201_CREATED)
+
                     else:
-                        return Response(data={'message': 'Car already exists in database'},
-                                        status=status.HTTP_400_BAD_REQUEST)
+                        info = f'Make is not existing or data is wrong {request.data}'
+                        return Response({'error': info}, status=status.HTTP_400_BAD_REQUEST)
 
                 # if such make is not existing
                 elif result == 'Empty response':
@@ -121,11 +123,16 @@ class Cars(mixins.ListModelMixin,
         except KeyError:
             return Response({'error': 'Wrong data in request'}, status=status.HTTP_400_BAD_REQUEST)
 
+
 class CarDetail(mixins.RetrieveModelMixin,
                 mixins.DestroyModelMixin,
                 generics.GenericAPIView):
     queryset = Car.objects.all()
     serializer_class = CarSerializer
+
+    def get_queryset(self):
+        self.queryset = Car.objects.all().annotate(avg_rating=Avg('rates__rate'))
+        return self.queryset
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
@@ -150,6 +157,6 @@ class Popular(generics.ListCreateAPIView):
     serializer_class = PopularSerializer
 
     def get_queryset(self):
-        self.queryset = Car.objects.all().annotate(rates_number=Count('rates')
-                                                    ).order_by('-rates_number')
+        self.queryset = Car.objects.all().annotate(rates_number=Count('rates')) \
+            .order_by('-rates_number')
         return self.queryset
