@@ -33,7 +33,7 @@
  - Should return top cars already present in the database ranking based
    on a number of rates )
 
-API is available under http://150.230.144.242/api/ (deployed on Oracle Cloud VM)
+API is available under http://150.230.144.242/api/cars/ (deployed on Oracle Cloud VM)
 You can deploy the api localy using docker. Fetch this GIT branch and build image by yourself using 
 
 > docker build -t carapi .
