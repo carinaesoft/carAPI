@@ -11,62 +11,6 @@ from .models import Car, Rating
 
 from .vpic_check import check_car
 
-'''@api_view(['GET', 'POST', 'DELETE'])
-@permission_classes((permissions.AllowAny,))
-def rate(request):
-
-    if request.method == 'GET':
-        rate = Rating.objects.all()
-        rate_serializer = RateSerializer(rate, many = True)
-        return Response(rate_serializer.data)
-    elif request.method == "POST":
-        rate_serializer = RateSerializer(data = request.data)
-        if rate_serializer.is_valid():
-            rate_serializer.save()
-            return Response (rate_serializer.data, status=status.HTTP_201_CREATED)
-        return Response(rate_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['GET', 'POST', 'DELETE'])
-@permission_classes((permissions.AllowAny,))
-def cars(request):
-    if request.method == 'GET':
-        cars = Car.objects.all()
-        car_serializer = CarSerializer(cars, many = True)
-        return Response(car_serializer.data)
-
-
-    elif request.method == 'POST':
-        result = check_car(request.data)
-
-        #if car exists in vnic db
-        if result == 'Found':
-            car_serializer = CarSerializer(data = request.data)
-
-            if car_serializer.is_valid():
-
-                #check if car is in DB
-                make = car_serializer.validated_data['make']
-                model = car_serializer.validated_data['model']
-                data_list = Car.objects.filter(make=make, model=model)
-                if not data_list:
-                    car_serializer.save()
-                    return Response (car_serializer.data, status=status.HTTP_201_CREATED)
-                else:
-                    return Response(data={'message': 'Car already exists in database'},status=status.HTTP_400_BAD_REQUEST)
-            return Response(car_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        #if such make is not existing
-        elif result == 'Empty response':
-            info = f'Make is not existing {request.data}'
-            return Response(info, status=status.HTTP_400_BAD_REQUEST)
-
-        #if make exists but model not
-        else:
-            info = f'Model is not existing {request.data}'
-            return Response(info, status=status.HTTP_400_BAD_REQUEST)
-'''
-
-
 class Cars(mixins.ListModelMixin,
            mixins.CreateModelMixin,
            generics.GenericAPIView,
